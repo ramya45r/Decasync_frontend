@@ -1,0 +1,52 @@
+/* ItemForm.css */
+.item-form-container {
+    max-width: 500px;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .item-form-container h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  .item-form-container input,
+  .item-form-container select,
+  .item-form-container button {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+  }
+  
+  .item-form-container input:focus,
+  .item-form-container select:focus {
+    border-color: #007bff;
+    outline: none;
+  }
+  
+  .item-form-container button {
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .item-form-container button:hover {
+    background-color: #0056b3;
+  }
+  
+  .item-form-container .form-label {
+    font-weight: bold;
+    color: #555;
+    margin-bottom: 5px;
+    display: block;
+  }
+  

@@ -1,11 +1,9 @@
-import React from 'react'
+// itemService.js
+import axios from 'axios';
 
-const itemService = () => {
-  return (
-    <div>
-      itemService
-    </div>
-  )
-}
+const API_URL = `${process.env.REACT_APP_BASEURL}/api/items`;
 
-export default itemService
+const getAllItems = () => axios.get(API_URL).then(res => res.data);
+const createItem = (data) => axios.post(API_URL + '/', data);
+
+export default { getAllItems, createItem };
