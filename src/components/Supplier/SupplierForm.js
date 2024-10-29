@@ -12,7 +12,7 @@ const countries = [
   'China',
   'Japan',
   'South Korea',
-  // Add more countries as needed
+ 
 ];
 
 const SupplierForm = ({ onSupplierAdded }) => {
@@ -136,7 +136,6 @@ const SupplierForm = ({ onSupplierAdded }) => {
   );
 };
 
-// Styles
 const formContainer = {
   padding: '30px',
   border: '1px solid #ddd',

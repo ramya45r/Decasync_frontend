@@ -23,7 +23,8 @@
     "stream-http": "^3.2.0",
     "url": "^0.11.4",
     "web-vitals": "^2.1.4",
-    "xlsx": "^0.18.5"
+    "xlsx": "^0.18.5",
+    "yup": "^1.4.0"
   },
   "scripts": {
     "start": "react-scripts start",

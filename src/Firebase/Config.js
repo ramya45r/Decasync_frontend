@@ -1,4 +1,3 @@
-// Config.js
 
 import { initializeApp } from 'firebase/app';
 import { getStorage } from 'firebase/storage';
@@ -13,7 +12,6 @@ const firebaseConfig = {
     measurementId: "G-2930K4ZBZ5"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const storage = getStorage(app);
 
