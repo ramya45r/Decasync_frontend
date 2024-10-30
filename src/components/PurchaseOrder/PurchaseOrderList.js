@@ -9,7 +9,21 @@ const PurchaseOrderList = () => {
   const [error, setError] = useState('');
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [searchOrderNo, setSearchOrderNo] = useState('');
+  const [filteredOrders, setFilteredOrders] = useState([]);
+  const [searchDate, setSearchDate] = useState('');
 
+  useEffect(() => {
+    const filterOrders = () => {
+      const dateFilteredOrders = purchaseOrders.filter(order => {
+        const matchesOrderNo = order.orderNo.toLowerCase().includes(searchOrderNo.toLowerCase());
+        const matchesDate = searchDate ? new Date(order.orderDate).toLocaleDateString() === searchDate : true;
+        return matchesOrderNo && matchesDate;
+      });
+      setFilteredOrders(dateFilteredOrders);
+    };
+    filterOrders();
+  }, [searchOrderNo, searchDate, purchaseOrders]);
   useEffect(() => {
     const fetchPurchaseOrders = async () => {
       try {
@@ -151,7 +165,20 @@ const PurchaseOrderList = () => {
   return (
     <div>
       <h2>Purchase Orders</h2>
-      <button onClick={exportAllToExcel}>Export All to Excel</button>
+      <button onClick={exportAllToExcel}>Export All to Excel</button><br/>
+      <input
+        type="text"
+        placeholder="Search by Order No"
+        value={searchOrderNo}
+        onChange={(e) => setSearchOrderNo(e.target.value)}
+      /><br />
+      <label>Search by date </label>
+       <input
+        type="date"
+        placeholder="Search by Order Date"
+        value={searchDate}
+        onChange={(e) => setSearchDate(e.target.value)}
+      />
 
       <table>
         <thead>
@@ -166,7 +193,7 @@ const PurchaseOrderList = () => {
           </tr>
         </thead>
         <tbody>
-          {purchaseOrders.map((order) => (
+          {filteredOrders.map((order) => (
             <tr key={order._id}>
               <td>{order.orderNo}</td>
               <td>{new Date(order.orderDate).toLocaleDateString()}</td>

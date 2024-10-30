@@ -177,10 +177,7 @@ const ItemList = () => {
               <option value="Enabled">Enabled</option>
             </select>
           </div>
-          <div>
-            <label>Images:</label>
-            <input type="text" name="images" value={formData.images.join(', ')} onChange={handleChange} placeholder="Comma-separated URLs" />
-          </div>
+        
           <button type="submit">Save</button>
           <button type="button" onClick={closeModal}>Cancel</button>
         </form>

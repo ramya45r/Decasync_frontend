@@ -40,22 +40,18 @@ const PurchaseOrderForm = () => {
 
   useEffect(() => {
     axios.get(`${process.env.REACT_APP_BASEURL}/api/suppliers`).then((res) => setSuppliers(res.data));
-    axios.get(`${process.env.REACT_APP_BASEURL}/api/items`).then((res) => setAvailableItems(res.data));
   }, []);
 
-  const validate = async () => {
-    try {
-      await validationSchema.validate(order, { abortEarly: false });
-      setErrors({});
-      return true;
-    } catch (validationErrors) {
-      const errorMessages = validationErrors.inner.reduce((acc, error) => {
-        acc[error.path] = error.message;
-        return acc;
-      }, {});
-      setErrors(errorMessages);
-      return false;
-    }
+  const fetchSupplierItems = (supplierId) => {
+    axios
+      .get(`${process.env.REACT_APP_BASEURL}/api/items?supplierId=${supplierId}`)
+      .then((res) => setAvailableItems(res.data));
+  };
+
+  const handleSupplierChange = (e) => {
+    const supplierId = e.target.value;
+    setOrder((prev) => ({ ...prev, supplierId }));
+    fetchSupplierItems(supplierId); // Fetch items for the selected supplier
   };
 
   const addItemToOrder = (item) => {
@@ -111,25 +107,15 @@ const PurchaseOrderForm = () => {
     setOrder((prev) => ({ ...prev, items: updatedItems, itemTotal, discountTotal, netAmount }));
   };
 
-  const handleExportToExcel = () => {
-    const worksheet = XLSX.utils.json_to_sheet(order.items);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'PurchaseOrder');
-    XLSX.writeFile(workbook, 'PurchaseOrder.xlsx');
-  };
-
-  const handlePrint = () => {
-    window.print();
-  };
-
   const handleSubmit = async () => {
-    const isValid = await validate();
-    if (!isValid) return;
-
-    setLoading(true);
     try {
-      const response = await apiService.createPurchaseOrder(order);
+      await validationSchema.validate(order, { abortEarly: false }); // Validate order data against schema
+  
+      setLoading(true);
+      await apiService.createPurchaseOrder(order);
       alert('Purchase Order Created Successfully!');
+  
+      // Reset the order form
       setOrder({
         orderNo: Date.now(),
         orderDate: new Date(),
@@ -140,13 +126,21 @@ const PurchaseOrderForm = () => {
         netAmount: 0,
       });
     } catch (error) {
-      console.error('Error creating order:', error);
-      alert('Failed to create order.');
+      if (error instanceof Yup.ValidationError) {
+        const validationErrors = {};
+        error.inner.forEach((err) => {
+          validationErrors[err.path] = err.message;
+        });
+        setErrors(validationErrors);
+      } else {
+        console.error('Error creating order:', error);
+        alert('Failed to create order.');
+      }
     } finally {
       setLoading(false);
     }
   };
-
+  
   return (
     <div className="container">
       <h2>Purchase Order</h2>
@@ -162,24 +156,22 @@ const PurchaseOrderForm = () => {
       <div>
         <label>Supplier</label>
         <select
-          onChange={(e) => setOrder((prev) => ({ ...prev, supplierId: e.target.value }))}
+          onChange={handleSupplierChange}
           value={order.supplierId}
           required
         >
           <option value="">Select Supplier</option>
           {suppliers.map((s) => (
-            <option key={s.id} value={s._id}>
+            <option key={s._id} value={s._id}>
               {s.name}
             </option>
           ))}
         </select>
-        {errors.supplierId && (
-  <span style={{ color: 'red' }}>{errors.supplierId}</span>
-)}
+        {errors.supplierId && <span className="error">{errors.supplierId}</span>}
       </div>
 
       {availableItems.map((item) => (
-        <div key={item.id}>
+        <div key={item._id}>
           <button onClick={() => addItemToOrder(item)} disabled={item.disabled}>
             Add {item.name}
           </button>
@@ -204,7 +196,7 @@ const PurchaseOrderForm = () => {
         </thead>
         <tbody>
           {order.items.map((item, index) => (
-            <tr key={item.id}>
+            <tr key={item._id}>
               <td>{item.itemNo}</td>
               <td>{item.name}</td>
               <td>{item.stockUnit}</td>
@@ -256,9 +248,8 @@ const PurchaseOrderForm = () => {
       </div>
 
       <button onClick={handleSubmit} disabled={loading}>
-        {loading ? 'Processing...' : 'Submit Order'}
+        {loading ? 'Submitting...' : 'Submit Order'}
       </button>
-  
     </div>
   );
 };
