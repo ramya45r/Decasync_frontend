@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import itemService from "../../services/itemService";
-import { fetchSuppliers } from "../../services/supplierService";
+import { fetchactiveSuppliers } from "../../services/supplierService";
 import "./ItemForm.css";
 
 import { storage } from "../../Firebase/Config";
@@ -25,7 +25,7 @@ const ItemForm = ({ onItemAdded }) => {
   const [errors, setErrors] = useState({});
 
   const fetchallSuppliers = async () => {
-    const activeSuppliers = await fetchSuppliers();
+    const activeSuppliers = await fetchactiveSuppliers();
     setSuppliers(activeSuppliers.data);
   };
   useEffect(() => {

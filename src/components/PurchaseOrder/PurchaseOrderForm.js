@@ -39,7 +39,7 @@ const PurchaseOrderForm = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    axios.get(`${process.env.REACT_APP_BASEURL}/api/suppliers`).then((res) => setSuppliers(res.data));
+    axios.get(`${process.env.REACT_APP_BASEURL}/api/suppliers/all`).then((res) => setSuppliers(res.data));
   }, []);
 
   const fetchSupplierItems = (supplierId) => {
@@ -51,7 +51,7 @@ const PurchaseOrderForm = () => {
   const handleSupplierChange = (e) => {
     const supplierId = e.target.value;
     setOrder((prev) => ({ ...prev, supplierId }));
-    fetchSupplierItems(supplierId); // Fetch items for the selected supplier
+    fetchSupplierItems(supplierId); 
   };
 
   const addItemToOrder = (item) => {
@@ -115,7 +115,6 @@ const PurchaseOrderForm = () => {
       await apiService.createPurchaseOrder(order);
       alert('Purchase Order Created Successfully!');
   
-      // Reset the order form
       setOrder({
         orderNo: Date.now(),
         orderDate: new Date(),

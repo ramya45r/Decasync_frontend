@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import itemService from '../../services/itemService';
-import { fetchSuppliers } from '../../services/supplierService';
+import { fetchactiveSuppliers } from '../../services/supplierService';
 
 const ItemList = () => {
   const [items, setItems] = useState([]);
@@ -29,7 +29,7 @@ const ItemList = () => {
   const [suppliers, setSuppliers] = useState([]);
   useEffect(() => {
     const fetchallSuppliers = async () => {
-      const activeSuppliers = await fetchSuppliers();
+      const activeSuppliers = await fetchactiveSuppliers();
       setSuppliers(activeSuppliers.data);
     };
     fetchallSuppliers();
